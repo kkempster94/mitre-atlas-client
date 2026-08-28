@@ -2,6 +2,7 @@ import { writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { posix } from "node:path";
 import { fileURLToPath } from "node:url";
+import { compileAtlasData } from "./compile-data.js";
 
 const RAW_BASE = "https://raw.githubusercontent.com/mitre-atlas/atlas-data/main";
 const ENTRY_PATH = "dist/ATLAS-latest.yaml";
@@ -46,6 +47,7 @@ async function main() {
   console.log(`Resolved to ${RAW_BASE}/${path}`);
   writeFileSync(DEST_PATH, content, "utf-8");
   console.log(`Wrote ${content.length} bytes to ${DEST_PATH}`);
+  compileAtlasData();
 }
 
 main().catch((err) => {
