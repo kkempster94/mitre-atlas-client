@@ -1,6 +1,6 @@
 {
   "name": "mitre-atlas-client",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Look up MITRE ATLAS tactics, techniques, mitigations, and case studies by ID.",
   "type": "module",
   "main": "./dist/index.js",
