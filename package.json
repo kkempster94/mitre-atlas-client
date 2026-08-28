@@ -29,6 +29,15 @@
     "threat-intelligence"
   ],
   "license": "MIT",
+  "author": "Kylan Kempster",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kkempster94/mitre-atlas-client.git"
+  },
+  "homepage": "https://github.com/kkempster94/mitre-atlas-client",
+  "bugs": {
+    "url": "https://github.com/kkempster94/mitre-atlas-client/issues"
+  },
   "engines": {
     "node": ">=18"
   },
