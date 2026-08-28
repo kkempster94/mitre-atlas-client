@@ -48,6 +48,7 @@ export interface Mitigation {
   "modified-date": string;
   "lifecycle-phases"?: string[];
   categories?: string[];
+  "attack-reference"?: AttackReference;
   url: string;
 }
 
@@ -65,7 +66,15 @@ export interface CaseStudy {
   target?: string;
   date?: string;
   "date-granularity"?: string;
+  reporter?: string;
   url: string;
 }
 
 export type AtlasObject = Tactic | Technique | Mitigation | CaseStudy;
+
+export interface RawAtlasDocument {
+  tactics: Record<string, Omit<Tactic, "url">>;
+  techniques: Record<string, Omit<Technique, "url">>;
+  mitigations: Record<string, Omit<Mitigation, "url">>;
+  "case-studies": Record<string, Omit<CaseStudy, "url">>;
+}
