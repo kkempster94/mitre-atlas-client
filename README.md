@@ -28,6 +28,29 @@ getById("bogus-id");     // undefined
 
 Returns the object's raw fields from ATLAS.yaml as-is, plus a derived `url` pointing to its atlas.mitre.org page. It does not resolve relationships (e.g. a technique's parent tactics, a mitigation's mitigated techniques, a case study's procedure) — those live in a separate `relationships` section of the upstream data and are out of scope for now.
 
+### Collection accessors
+
+```ts
+import {
+  getAllObjects,
+  getTactics,
+  getTechniques,
+  getMitigations,
+  getCaseStudies,
+  getObjectsById,
+  buildAtlasUrl,
+} from "mitre-atlas-client";
+
+getAllObjects();   // AtlasObject[] — every tactic, technique, mitigation, and case study
+getTactics();      // Tactic[]
+getTechniques();   // Technique[] — includes sub-techniques
+getMitigations();  // Mitigation[]
+getCaseStudies();  // CaseStudy[]
+getObjectsById();  // Map<string, AtlasObject> — the same lookup table getById() uses
+
+buildAtlasUrl("technique", "AML.T0000"); // "https://atlas.mitre.org/techniques/AML.T0000"
+```
+
 ## Development
 
 ```sh
