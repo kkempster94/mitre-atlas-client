@@ -37,4 +37,30 @@ describe("getById", () => {
   it("returns undefined for an unknown ID", () => {
     expect(getById("AML.T9999")).toBeUndefined();
   });
+
+  it("returns a frozen object that cannot be mutated", () => {
+    const technique = getById("AML.T0000");
+    expect(technique).toBeDefined();
+    expect(Object.isFrozen(technique)).toBe(true);
+
+    expect(() => {
+      technique!.name = "tampered";
+    }).toThrow(TypeError);
+    expect(getById("AML.T0000")?.name).toBe("Search Open Technical Databases");
+  });
+
+  it("returns an object whose nested references array cannot be mutated", () => {
+    const technique = getById("AML.T0000");
+    expect(technique).toBeDefined();
+    expect(Object.isFrozen(technique!.references)).toBe(true);
+
+    expect(() => {
+      technique!.references.push({ url: "https://example.com" });
+    }).toThrow(TypeError);
+    expect(getById("AML.T0000")?.references).toHaveLength(technique!.references.length);
+  });
+
+  it("returns the same cached instance across calls", () => {
+    expect(getById("AML.T0000")).toBe(getById("AML.T0000"));
+  });
 });
