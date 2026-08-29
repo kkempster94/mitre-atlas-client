@@ -17,7 +17,7 @@ const DEST_PATH = join(__dirname, "..", "data", "ATLAS.yaml");
 // dist/ATLAS-latest.yaml -> dist/v6/ATLAS-latest.yaml -> dist/v6/ATLAS-2026.07.yaml).
 // raw.githubusercontent.com serves a symlink's raw blob content, which is just the
 // target path as plain text, not the resolved file - so we follow the chain manually.
-function looksLikeSymlinkTarget(text: string): boolean {
+export function looksLikeSymlinkTarget(text: string): boolean {
   const trimmed = text.trim();
   return !trimmed.includes("\n") && /^[\w./-]+\.ya?ml$/i.test(trimmed);
 }
