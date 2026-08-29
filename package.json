@@ -20,8 +20,10 @@
     "build": "tsc -p tsconfig.json",
     "pretest": "npm run compile-data",
     "test": "vitest run",
+    "pretypecheck": "npm run compile-data",
+    "typecheck": "tsc --noEmit -p tsconfig.check.json",
     "sync-data": "tsx scripts/sync-data.ts",
-    "prepublishOnly": "npm run build && npm test"
+    "prepublishOnly": "npm run typecheck && npm run build && npm test"
   },
   "keywords": [
     "mitre",
