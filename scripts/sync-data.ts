@@ -6,7 +6,9 @@ import { compileAtlasData } from "./compile-data.js";
 
 const RAW_BASE = "https://raw.githubusercontent.com/mitre-atlas/atlas-data/main";
 const ENTRY_PATH = "dist/ATLAS-latest.yaml";
+const ROOT_DIR = "dist";
 const MAX_SYMLINK_HOPS = 5;
+const FETCH_TIMEOUT_MS = 15000;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DEST_PATH = join(__dirname, "..", "data", "ATLAS.yaml");
@@ -20,9 +22,21 @@ function looksLikeSymlinkTarget(text: string): boolean {
   return !trimmed.includes("\n") && /^[\w./-]+\.ya?ml$/i.test(trimmed);
 }
 
+// Resolves a symlink target relative to `baseDir` and rejects any result that
+// escapes `ROOT_DIR` (e.g. via `..` segments), since the target is used to build
+// a fetch URL and an upstream symlink should never be able to redirect us outside
+// the expected `dist/` tree.
+export function resolveWithinRoot(baseDir: string, target: string): string {
+  const resolved = posix.normalize(posix.join(baseDir, target));
+  if (resolved !== ROOT_DIR && !resolved.startsWith(`${ROOT_DIR}/`)) {
+    throw new Error(`Symlink target "${target}" resolves outside of "${ROOT_DIR}/": ${resolved}`);
+  }
+  return resolved;
+}
+
 async function fetchText(path: string): Promise<string> {
   const url = `${RAW_BASE}/${path}`;
-  const response = await fetch(url);
+  const response = await fetch(url, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
   if (!response.ok) {
     throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
   }
@@ -36,7 +50,7 @@ async function resolveAtlasYaml(entryPath: string): Promise<{ path: string; cont
     if (!looksLikeSymlinkTarget(content)) {
       return { path, content };
     }
-    path = posix.join(posix.dirname(path), content.trim());
+    path = resolveWithinRoot(posix.dirname(path), content.trim());
   }
   throw new Error(`Too many symlink hops resolving ${entryPath}`);
 }
@@ -50,7 +64,9 @@ async function main() {
   compileAtlasData();
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exitCode = 1;
-});
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch((err) => {
+    console.error(err);
+    process.exitCode = 1;
+  });
+}
