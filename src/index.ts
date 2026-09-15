@@ -4,6 +4,7 @@ export type {
   AtlasObject,
   AttackReference,
   CaseStudy,
+  DeepReadonly,
   Mitigation,
   Reference,
   Tactic,

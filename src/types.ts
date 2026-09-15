@@ -72,6 +72,17 @@ export interface CaseStudy {
 
 export type AtlasObject = Tactic | Technique | Mitigation | CaseStudy;
 
+/**
+ * Recursively marks every property (including nested arrays/objects) as
+ * `readonly`, mirroring the runtime immutability `deepFreeze` applies to
+ * cached objects.
+ */
+export type DeepReadonly<T> = T extends (infer U)[]
+  ? ReadonlyArray<DeepReadonly<U>>
+  : T extends object
+    ? { readonly [K in keyof T]: DeepReadonly<T[K]> }
+    : T;
+
 export interface RawAtlasDocument {
   tactics: Record<string, Omit<Tactic, "url">>;
   techniques: Record<string, Omit<Technique, "url">>;
