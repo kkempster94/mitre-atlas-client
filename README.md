@@ -30,6 +30,19 @@ Returns the object's raw fields from ATLAS.yaml as-is, plus a derived `url` poin
 
 Returned objects are deeply frozen and typed as `DeepReadonly` — mutating any field (including nested arrays like `references`) throws a `TypeError` instead of silently corrupting the shared cache. Copy the object first (e.g. with a spread) if you need a mutable version.
 
+### Lazy loading
+
+`getById` requires the full ATLAS dataset to be loaded in memory. For browser bundles that only need a handful of objects, `getByIdAsync` and `getByIdsAsync` fetch just the requested object(s) via a dynamic `import()`, one module per ID. Bundlers that support code-splitting on dynamic import (webpack, Vite/Rollup) will split each object into its own chunk, so only what's requested is downloaded at runtime. Like `getById`, the returned objects are deeply frozen.
+
+```ts
+import { getByIdAsync, getByIdsAsync } from "mitre-atlas-client";
+
+const technique = await getByIdAsync("AML.T0000");
+const [tactic, mitigation] = await getByIdsAsync(["AML.TA0002", "AML.M0000"]);
+
+await getByIdAsync("bogus-id"); // undefined
+```
+
 ## Development
 
 ```sh
