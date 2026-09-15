@@ -44,7 +44,7 @@ describe("getById", () => {
     expect(Object.isFrozen(technique)).toBe(true);
 
     expect(() => {
-      technique!.name = "tampered";
+      (technique as { name: string }).name = "tampered";
     }).toThrow(TypeError);
     expect(getById("AML.T0000")?.name).toBe("Search Open Technical Databases");
   });
@@ -55,7 +55,7 @@ describe("getById", () => {
     expect(Object.isFrozen(technique!.references)).toBe(true);
 
     expect(() => {
-      technique!.references.push({ url: "https://example.com" });
+      (technique!.references as { url: string }[]).push({ url: "https://example.com" });
     }).toThrow(TypeError);
     expect(getById("AML.T0000")?.references).toHaveLength(technique!.references.length);
   });

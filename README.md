@@ -28,6 +28,8 @@ getById("bogus-id");     // undefined
 
 Returns the object's raw fields from ATLAS.yaml as-is, plus a derived `url` pointing to its atlas.mitre.org page. It does not resolve relationships (e.g. a technique's parent tactics, a mitigation's mitigated techniques, a case study's procedure) — those live in a separate `relationships` section of the upstream data and are out of scope for now.
 
+Returned objects are deeply frozen and typed as `DeepReadonly` — mutating any field (including nested arrays like `references`) throws a `TypeError` instead of silently corrupting the shared cache. Copy the object first (e.g. with a spread) if you need a mutable version.
+
 ## Development
 
 ```sh
