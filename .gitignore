@@ -2,3 +2,4 @@ node_modules/
 dist/
 *.log
 src/atlas-data.ts
+src/data/

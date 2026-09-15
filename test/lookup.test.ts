@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getById } from "../src/index.js";
+import { getByIdAsync, getByIdsAsync, getById } from "../dist/index.js";
 
 describe("getById", () => {
   it("looks up a tactic", () => {
@@ -62,5 +62,31 @@ describe("getById", () => {
 
   it("returns the same cached instance across calls", () => {
     expect(getById("AML.T0000")).toBe(getById("AML.T0000"));
+  });
+});
+
+describe("getByIdAsync", () => {
+  it("looks up a technique via dynamic import", async () => {
+    const technique = await getByIdAsync("AML.T0000");
+    expect(technique?.["object-type"]).toBe("technique");
+    expect(technique?.name).toBe("Search Open Technical Databases");
+    expect(technique?.url).toBe("https://atlas.mitre.org/techniques/AML.T0000");
+  });
+
+  it("returns undefined for an unknown ID without attempting a dynamic import", async () => {
+    expect(await getByIdAsync("AML.T9999")).toBeUndefined();
+  });
+
+  it("rejects a path-traversal-shaped ID instead of importing an arbitrary module", async () => {
+    expect(await getByIdAsync("../../package.json")).toBeUndefined();
+  });
+});
+
+describe("getByIdsAsync", () => {
+  it("looks up multiple objects, preserving order and undefined entries", async () => {
+    const [tactic, unknown, mitigation] = await getByIdsAsync(["AML.TA0002", "AML.T9999", "AML.M0000"]);
+    expect(tactic?.name).toBe("Reconnaissance");
+    expect(unknown).toBeUndefined();
+    expect(mitigation?.["object-type"]).toBe("mitigation");
   });
 });

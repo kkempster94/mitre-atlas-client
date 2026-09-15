@@ -1,4 +1,4 @@
-import { getObjectsById } from "./data.js";
+import { getByIdAsync, getByIdsAsync, getObjectsById } from "./data.js";
 
 export type {
   AtlasObject,
@@ -19,3 +19,5 @@ export type {
 export function getById(id: string) {
   return getObjectsById().get(id);
 }
+
+export { getByIdAsync, getByIdsAsync };

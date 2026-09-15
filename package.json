@@ -18,9 +18,9 @@
     "compile-data": "tsx scripts/compile-data.ts",
     "prebuild": "npm run compile-data",
     "build": "tsc -p tsconfig.json",
-    "pretest": "npm run compile-data",
+    "pretest": "npm run build",
     "test": "vitest run",
-    "pretypecheck": "npm run compile-data",
+    "pretypecheck": "npm run build",
     "typecheck": "tsc --noEmit -p tsconfig.check.json",
     "sync-data": "tsx scripts/sync-data.ts",
     "prepublishOnly": "npm run typecheck && npm run build && npm test"
