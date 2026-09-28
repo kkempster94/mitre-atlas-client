@@ -1,5 +1,5 @@
 import { rawAtlasData } from "./atlas-data.js";
-import { atlasObjectIds } from "./data/manifest.js";
+import { loaders } from "./data/loaders.js";
 import type { AtlasObject, AtlasSummary, DeepReadonly } from "./types.js";
 import { buildAtlasUrl } from "./urls.js";
 
@@ -46,10 +46,10 @@ export function getObjectsById(): ReadonlyMap<string, DeepReadonly<AtlasObject>>
  * Returned objects are frozen, matching {@link getObjectsById}.
  */
 export async function getByIdAsync(id: string): Promise<DeepReadonly<AtlasObject> | undefined> {
-  if (!atlasObjectIds.has(id)) {
+  if (!Object.hasOwn(loaders, id)) {
     return undefined;
   }
-  const module = (await import(`./data/${id}.js`)) as { default: AtlasObject };
+  const module = await loaders[id]!();
   return deepFreeze(module.default);
 }
 
