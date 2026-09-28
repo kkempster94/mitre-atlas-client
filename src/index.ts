@@ -1,11 +1,13 @@
-import { getByIdAsync, getByIdsAsync, getObjectsById } from "./data.js";
+import { getByIdAsync, getByIdsAsync, getObjectsById, getSummaryIndex } from "./data.js";
 
 export type {
   AtlasObject,
+  AtlasSummary,
   AttackReference,
   CaseStudy,
   DeepReadonly,
   Mitigation,
+  ObjectType,
   Reference,
   Tactic,
   Technique,
@@ -20,4 +22,4 @@ export function getById(id: string) {
   return getObjectsById().get(id);
 }
 
-export { getByIdAsync, getByIdsAsync };
+export { getByIdAsync, getByIdsAsync, getSummaryIndex };
