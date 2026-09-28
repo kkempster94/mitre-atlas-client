@@ -73,7 +73,7 @@ Returned objects are deeply frozen and typed as `DeepReadonly` — mutating any 
 
 ### Lazy loading
 
-`getById` requires the full ATLAS dataset to be loaded in memory. For browser bundles that only need a handful of objects, `getByIdAsync` and `getByIdsAsync` fetch just the requested object(s) via a dynamic `import()`, one module per ID. `getSummaryIndex` is loaded the same way, as its own chunk. Bundlers that support code-splitting on dynamic import (webpack, Vite/Rollup) will split each object into its own chunk, so only what's requested is downloaded at runtime. Like `getById`, the returned objects are deeply frozen.
+`getById` requires the full ATLAS dataset to be loaded in memory. For browser bundles that only need a handful of objects, `getByIdAsync` and `getByIdsAsync` fetch just the requested object(s) via a dynamic `import()`, one module per ID. `getSummaryIndex` is loaded the same way, as its own chunk. Each per-ID `import()` uses a literal path, so bundlers that support code-splitting on dynamic import (webpack, Vite/Rollup) will split each object into its own chunk, so only what's requested is downloaded at runtime. This works when the package is installed under `node_modules`, not just when linked. Like `getById`, the returned objects are deeply frozen.
 
 ```ts
 import { getByIdAsync, getByIdsAsync } from "mitre-atlas-client";
