@@ -20,6 +20,7 @@ interface RelationshipEdge {
   source: string;
   target: string;
   "relationship-type": string;
+  "step-id"?: string;
 }
 
 // Which group each upstream relationship type connects, as [source, target].
@@ -42,7 +43,8 @@ function pushUnique(object: Record<string, unknown>, field: string, id: string):
 /**
  * Resolves the upstream `relationships` section into ID-array fields on each
  * object, in both directions. Upstream keys edges by source ID, and the order
- * of a technique's `achieves` edges is preserved as its `tactics` order. The
+ * of a technique's `achieves` edges is preserved as its `tactics` order, and a
+ * case study's `employs` edges are sorted by `step-id` to give procedure order. The
  * matrix's `sequences` edges (tactic column order) are not object relationships
  * and are skipped. Anything unexpected throws so upstream changes surface here.
  */
@@ -76,7 +78,12 @@ function resolveRelationships(doc: Record<string, unknown>, data: Record<GroupKe
       if (!endpoints) {
         throw new Error(`Unknown relationship type "${type}" on ${sourceKey}`);
       }
-      for (const { source, target, "relationship-type": edgeType } of edges) {
+      // Case study steps are listed in upstream order, which is not step order.
+      const ordered =
+        type === "employs"
+          ? [...edges].sort((a, b) => (a["step-id"] ?? "").localeCompare(b["step-id"] ?? "", undefined, { numeric: true }))
+          : edges;
+      for (const { source, target, "relationship-type": edgeType } of ordered) {
         if (source !== sourceKey || edgeType !== type) {
           throw new Error(`Relationship ${sourceKey}/${type} has inconsistent edge ${source} -> ${target} (${edgeType})`);
         }

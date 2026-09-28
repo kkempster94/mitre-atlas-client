@@ -94,6 +94,18 @@ describe("relationship fields", () => {
     }
   });
 
+  it("lists case study techniques in procedure (step-id) order", () => {
+    const caseStudy = getById("AML.CS0000") as DeepReadonly<CaseStudy>;
+    expect(caseStudy.techniques).toEqual([
+      "AML.T0000.001",
+      "AML.T0002.000",
+      "AML.T0005",
+      "AML.T0043.003",
+      "AML.T0042",
+      "AML.T0015",
+    ]);
+  });
+
   it("agrees between sub-technique parent and parent subtechniques", () => {
     for (const technique of techniques) {
       if (technique.parent) {
